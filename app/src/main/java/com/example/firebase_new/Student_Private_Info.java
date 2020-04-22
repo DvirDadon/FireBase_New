@@ -3,17 +3,17 @@ package com.example.firebase_new;
 public class Student_Private_Info {
     private String Student_N;
     private String Address;
-    private int Student_P;
-    private int Home_Phone;
+    private long Student_P;
+    private long Home_Phone;
     private String Mom_N;
-    private int Mom_P;
+    private long Mom_P;
     private String Dad_N;
-    private int Dad_P;
+    private long Dad_P;
     private String stuID;
 
     public Student_Private_Info(){ }
 
-    public Student_Private_Info(String Student_N,String Address, int Student_P,int home_Phone,String Mom_N , int Mom_P, String Dad_N,int Dad_P,String stuID){
+    public Student_Private_Info(String Student_N,String Address, long Student_P,long home_Phone,String Mom_N , long Mom_P, String Dad_N,long Dad_P,String stuID){
         this.Student_N = Student_N;
         this.Address = Address;
         this.Student_P = Student_P;
@@ -40,7 +40,7 @@ public class Student_Private_Info {
         this.Address=Address;
     }
 
-    public int getStudent_P() {
+    public long getStudent_P() {
         return Student_P;
     }
 
@@ -56,7 +56,7 @@ public class Student_Private_Info {
         this.Student_N=Student_N;
     }
 
-    public int getHome_Phone() {
+    public long getHome_Phone() {
         return Home_Phone;
     }
 
@@ -72,7 +72,7 @@ public class Student_Private_Info {
         this.Mom_N=Mom_N;
     }
 
-    public int getMom_P() {
+    public long getMom_P() {
         return Mom_P;
     }
 
@@ -88,7 +88,7 @@ public class Student_Private_Info {
         this.Dad_N=Dad_N;
     }
 
-    public int getDad_P() {
+    public long getDad_P() {
         return Dad_P;
     }
 

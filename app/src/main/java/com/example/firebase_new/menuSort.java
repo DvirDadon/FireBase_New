@@ -3,8 +3,11 @@ package com.example.firebase_new;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.renderscript.Sampler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -106,6 +109,61 @@ public class menuSort extends AppCompatActivity {
     }
 
     public void Filter_Grade(View view) {
+        String grade = Filter_Grade.getText().toString();
+        Query query = refStuddentGrade.equalTo(grade);
+        sorted.clear();
+        ValueEventListener stuListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dS) {
+                for (DataSnapshot data : dS.getChildren()){
+                    str3 = (String) data.getKey();
+                    StuGrades stuGradeTmp = data.getValue(StuGrades.class);
+                    stuSub.add(stuGradeTmp);
+                    str4 = stuGradeTmp.getQuarter()+"";
+                    sorted.add(str3+" "+str4);
+                }
+                adp3 = new ArrayAdapter<String>(menuSort.this,R.layout.support_simple_spinner_dropdown_item, sorted);
+                lvsorted.setAdapter(adp3);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        refStudents.addValueEventListener(stuListener);
+        query.addListenerForSingleValueEvent(stuListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case (R.id.menuDataIn): {
+                Intent s = new Intent(this, MainActivity.class);
+                startActivity(s);
+
+                break;
+            }
+            case (R.id.menuDelete): {
+                Intent s = new Intent(this, menuDelete.class);
+                startActivity(s);
+                break;
+            }
+            case (R.id.Credits): {
+                Intent s = new Intent(this, Credits.class);
+                startActivity(s);
+                break;
+            }
+            default:
+                break;
+        }
+        return true;
     }
 }

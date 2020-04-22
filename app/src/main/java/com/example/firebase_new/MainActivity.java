@@ -9,17 +9,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import java.util.UUID;
 
 import static com.example.firebase_new.FBref.refStuddentGrade;
 import static com.example.firebase_new.FBref.refStudents;
+
 
 public class MainActivity extends AppCompatActivity {
     EditText S_Name,Address,S_Phone,HomePhone,M_Name,M_Phone,D_Name,D_Phone,Subject,Quarter,Grade;
     Student_Private_Info SPI;
     StuGrades SG;
-    String uniqueID = UUID.randomUUID().toString();;
+    String  stuID=" ";
 
     /**
      * @author Dvir Dadon
@@ -56,20 +57,20 @@ public class MainActivity extends AppCompatActivity {
         String address = Address.getText().toString();
         String Mom_N = M_Name.getText().toString();
         String Dad_N = D_Name.getText().toString();
-        uniqueID = UUID.randomUUID().toString();
 
         String Student_P = S_Phone.getText().toString();
         String HomeP = HomePhone.getText().toString();
         String Mom_Phone = M_Phone.getText().toString();
         String Dad_Phone = D_Phone.getText().toString();
 
-        int S_P = Integer.parseInt(Student_P);
-        int HP = Integer.parseInt(HomeP);
-        int M_P = Integer.parseInt(Mom_Phone);
-        int D_P = Integer.parseInt(Dad_Phone);
+        long S_P = Long.parseLong(Student_P);
+        long HP = Long.parseLong(HomeP);
+        long M_P = Long.parseLong(Mom_Phone);
+        long D_P = Long.parseLong(Dad_Phone);
 
-        SPI = new Student_Private_Info(Student_N,address,S_P,HP,Mom_N,M_P,Dad_N,D_P,uniqueID);
-        refStudents.child(uniqueID).setValue(SPI);
+        stuID = Student_N.charAt(0)+Student_P.charAt(3)+Student_P.charAt(4)+"";
+        SPI = new Student_Private_Info(Student_N,address,S_P,HP,Mom_N,M_P,Dad_N,D_P,stuID);
+        refStudents.child(stuID).setValue(SPI);
     }
 
     /**
@@ -78,15 +79,20 @@ public class MainActivity extends AppCompatActivity {
      * The method insert the info the user entered to the firebase data
      */
     public void Grades_In(View view) {
-        String subject = Subject.getText().toString();
-        String quarter = Quarter.getText().toString();
-        String grade = Grade.getText().toString();
+        if(stuID== " "){
+            Toast.makeText(this, "Enter the student private info first.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            String subject = Subject.getText().toString();
+            String quarter = Quarter.getText().toString();
+            String grade = Grade.getText().toString();
 
-        int Q = Integer.parseInt(quarter);
-        int G = Integer.parseInt(grade);
+            long Q = Integer.parseInt(quarter);
+            long G = Integer.parseInt(grade);
 
-        SG = new StuGrades(subject,Q,G,uniqueID);
-        refStuddentGrade.child(uniqueID).setValue(SG);
+            SG = new StuGrades(subject, Q, G, stuID);
+            refStuddentGrade.child(stuID).setValue(SG);
+        }
     }
 
     /**

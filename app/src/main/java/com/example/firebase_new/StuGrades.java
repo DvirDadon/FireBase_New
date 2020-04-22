@@ -2,13 +2,13 @@ package com.example.firebase_new;
 
 public class StuGrades {
     private String subject;
-    private int quarter;
-    private int grade;
+    private long quarter;
+    private long grade;
     private String stuID;
 
     public StuGrades(){}
 
-    public StuGrades(String subject , int quarter , int grade,String stuID){
+    public StuGrades(String subject , long quarter , long grade,String stuID){
         this.subject = subject;
         this.quarter = quarter;
         this.grade = grade;
@@ -31,7 +31,7 @@ public class StuGrades {
         this.subject=subject;
     }
 
-    public int getQuarter() {
+    public long getQuarter() {
         return quarter;
     }
 
@@ -39,7 +39,7 @@ public class StuGrades {
         this.quarter=quarter;
     }
 
-    public int getGrade() {
+    public long getGrade() {
         return grade;
     }
 
