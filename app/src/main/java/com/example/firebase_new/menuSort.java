@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,55 +19,42 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.firebase_new.FBref.refStuddentGrade;
+import static com.example.firebase_new.FBref.refStudentGrade;
 import static com.example.firebase_new.FBref.refStudents;
 
 public class menuSort extends AppCompatActivity {
-    ArrayList<String> stuList = new ArrayList<String>();
-    ArrayList<Student_Private_Info> stuValues = new ArrayList<Student_Private_Info>();
     ArrayList<String> stuGradeList = new ArrayList<String>();
     ArrayList<StuGrades> stuGradeValues = new ArrayList<StuGrades>();
     ArrayList<StuGrades> stuSub = new ArrayList<StuGrades>();
     ArrayList<String> sorted = new ArrayList<String>();
-    ListView lv, lvGrades,lvsorted;
-    String str1, str2, str3, str4;
-    ArrayAdapter<String> adp;
+    ListView  lvGrades,lvsorted;
+    String  str3, str4;
     ArrayAdapter<String> adp2;
     ArrayAdapter<String> adp3;
-    EditText Filter_Grade;
-    ValueEventListener stuListener;
+    EditText Filter_Grade,Filter_Subject;
+    ValueEventListener stuGradeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_sort);
-        lv = findViewById(R.id.lv);
         lvGrades = findViewById(R.id.lvGrades);
         lvsorted = findViewById(R.id.lvsorted);
         Filter_Grade = findViewById(R.id.Filter_Grade);
-        ValueEventListener stuListener = new ValueEventListener() {
+        Filter_Subject = findViewById(R.id.Filter_Subject);
+
+        ValueEventListener StuGradeListener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dS) {
-                stuList.clear();
-                stuValues.clear();
+            public void onDataChange( DataSnapshot dS) {
                 stuGradeList.clear();
                 stuGradeValues.clear();
-                for (DataSnapshot data : dS.getChildren()){
-                    str1 = (String) data.getKey();
-                    Student_Private_Info stuTmp = data.getValue(Student_Private_Info.class);
-                    stuValues.add(stuTmp);
-                    str2 = stuTmp.getStudent_N();
-                    stuList.add(str1+" "+str2);
-                }
                 for (DataSnapshot data : dS.getChildren()){
                     str3 = (String) data.getKey();
                     StuGrades stuGradeTmp = data.getValue(StuGrades.class);
                     stuGradeValues.add(stuGradeTmp);
-                    str4 = stuGradeTmp.getSubject();
+                    str4 = stuGradeTmp.getSubject()+","+stuGradeTmp.getQuarter()+","+stuGradeTmp.getGrade();
                     stuGradeList.add(str3+" "+str4);
                 }
-                adp = new ArrayAdapter<String>(menuSort.this,R.layout.support_simple_spinner_dropdown_item, stuList);
-                lv.setAdapter(adp);
                 adp2 = new ArrayAdapter<String>(menuSort.this,R.layout.support_simple_spinner_dropdown_item,stuGradeList);
                 lvGrades.setAdapter(adp2);
             }
@@ -78,21 +64,28 @@ public class menuSort extends AppCompatActivity {
 
             }
         };
-        refStudents.addValueEventListener(stuListener);
+        refStudentGrade.addValueEventListener(StuGradeListener);
     }
 
+    /**
+     * @since 26/4/2020
+     * The method filtering the subject by user input
+     * @param view
+     */
     public void Filter_Subject(View view) {
-        String sub = Filter_Grade.getText().toString();
-        Query query = refStuddentGrade.equalTo(sub);
-        sorted.clear();
-        ValueEventListener stuListener = new ValueEventListener() {
+        String sub =Filter_Subject.getText().toString();
+        Query query = refStudentGrade.orderByChild("subject").equalTo(sub);
+
+        ValueEventListener stuGradeListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dS) {
+                sorted.clear();
+                stuSub.clear();
                 for (DataSnapshot data : dS.getChildren()){
                     str3 = (String) data.getKey();
                     StuGrades stuGradeTmp = data.getValue(StuGrades.class);
                     stuSub.add(stuGradeTmp);
-                    str4 = stuGradeTmp.getQuarter()+"";
+                    str4 = stuGradeTmp.getSubject()+","+stuGradeTmp.getQuarter()+","+stuGradeTmp.getGrade();
                     sorted.add(str3+" "+str4);
                 }
                 adp3 = new ArrayAdapter<String>(menuSort.this,R.layout.support_simple_spinner_dropdown_item, sorted);
@@ -104,22 +97,28 @@ public class menuSort extends AppCompatActivity {
 
             }
         };
-        refStudents.addValueEventListener(stuListener);
-        query.addListenerForSingleValueEvent(stuListener);
-    }
+        query.addListenerForSingleValueEvent(stuGradeListener); }
 
+    /**
+     * @since 26/4/2020
+     * The method filtering grade upward from the input that entered.
+     * @param view
+     */
     public void Filter_Grade(View view) {
         String grade = Filter_Grade.getText().toString();
-        Query query = refStuddentGrade.equalTo(grade);
-        sorted.clear();
-        ValueEventListener stuListener = new ValueEventListener() {
+        long G = Long.parseLong(grade);
+        Query query = refStudentGrade.orderByChild("grade").startAt(G);
+
+        ValueEventListener stuGradeListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dS) {
+                sorted.clear();
+                stuSub.clear();
                 for (DataSnapshot data : dS.getChildren()){
                     str3 = (String) data.getKey();
                     StuGrades stuGradeTmp = data.getValue(StuGrades.class);
                     stuSub.add(stuGradeTmp);
-                    str4 = stuGradeTmp.getQuarter()+"";
+                    str4 = stuGradeTmp.getSubject()+","+stuGradeTmp.getQuarter()+","+stuGradeTmp.getGrade();
                     sorted.add(str3+" "+str4);
                 }
                 adp3 = new ArrayAdapter<String>(menuSort.this,R.layout.support_simple_spinner_dropdown_item, sorted);
@@ -131,8 +130,12 @@ public class menuSort extends AppCompatActivity {
 
             }
         };
-        refStudents.addValueEventListener(stuListener);
-        query.addListenerForSingleValueEvent(stuListener);
+        query.addListenerForSingleValueEvent(stuGradeListener); }
+
+    public void EndAct () {
+        if (stuGradeList!=null) {
+            refStudentGrade.removeEventListener(stuGradeListener);
+        }
     }
 
     @Override
@@ -147,17 +150,20 @@ public class menuSort extends AppCompatActivity {
         switch (id) {
             case (R.id.menuDataIn): {
                 Intent s = new Intent(this, MainActivity.class);
+                EndAct();
                 startActivity(s);
 
                 break;
             }
             case (R.id.menuDelete): {
                 Intent s = new Intent(this, menuDelete.class);
+                EndAct();
                 startActivity(s);
                 break;
             }
             case (R.id.Credits): {
                 Intent s = new Intent(this, Credits.class);
+                EndAct();
                 startActivity(s);
                 break;
             }

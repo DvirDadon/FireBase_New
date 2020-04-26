@@ -2,7 +2,7 @@ package com.example.firebase_new;
 
 public class Student_Private_Info {
     private String Student_N;
-    private String Address;
+    private String address;
     private long Student_P;
     private long Home_Phone;
     private String Mom_N;
@@ -15,7 +15,7 @@ public class Student_Private_Info {
 
     public Student_Private_Info(String Student_N,String Address, long Student_P,long home_Phone,String Mom_N , long Mom_P, String Dad_N,long Dad_P,String stuID){
         this.Student_N = Student_N;
-        this.Address = Address;
+        this.address = Address;
         this.Student_P = Student_P;
         this.Home_Phone = home_Phone;
         this.Mom_N = Mom_N;
@@ -33,18 +33,18 @@ public class Student_Private_Info {
     }
 
     public String getAddress() {
-        return Address;
+        return address;
     }
 
     public void setAddress(String Address) {
-        this.Address=Address;
+        this.address=Address;
     }
 
     public long getStudent_P() {
         return Student_P;
     }
 
-    public void setStudent_P(int Student_P) {
+    public void setStudent_P(long Student_P) {
         this.Student_P=Student_P;
     }
 
@@ -60,7 +60,7 @@ public class Student_Private_Info {
         return Home_Phone;
     }
 
-    public void setHome_Phone(int Home_Phone) {
+    public void setHome_Phone(long Home_Phone) {
         this.Home_Phone=Home_Phone;
     }
 
@@ -68,7 +68,7 @@ public class Student_Private_Info {
         return Mom_N;
     }
 
-    public void setClassSubject(String Mom_N) {
+    public void setMom_N(String Mom_N) {
         this.Mom_N=Mom_N;
     }
 
@@ -76,7 +76,7 @@ public class Student_Private_Info {
         return Mom_P;
     }
 
-    public void setMom_P(int Mom_P) {
+    public void setMom_P(long Mom_P) {
         this.Mom_P=Mom_P;
     }
 
@@ -88,11 +88,7 @@ public class Student_Private_Info {
         this.Dad_N=Dad_N;
     }
 
-    public long getDad_P() {
-        return Dad_P;
-    }
+    public long getDad_P() { return Dad_P; }
 
-    public void setDad_P(int Dad_P) {
-        this.Dad_P=Dad_P;
-    }
+    public void setDad_P(long Dad_P) { this.Dad_P=Dad_P; }
 }

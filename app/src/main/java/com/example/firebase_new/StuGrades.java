@@ -4,23 +4,24 @@ public class StuGrades {
     private String subject;
     private long quarter;
     private long grade;
-    private String stuID;
+    private String StuID;
+
 
     public StuGrades(){}
 
-    public StuGrades(String subject , long quarter , long grade,String stuID){
+    public StuGrades(String subject , long quarter , long grade, String StuID){
         this.subject = subject;
         this.quarter = quarter;
         this.grade = grade;
-        this.stuID = stuID;
+        this.StuID = StuID;
     }
 
     public String getStuID() {
-        return stuID;
+        return StuID;
     }
 
     public void setStuID(String StuID) {
-        this.stuID=StuID;
+        this.StuID=StuID;
     }
 
     public String getSubject() {
@@ -35,7 +36,7 @@ public class StuGrades {
         return quarter;
     }
 
-    public void setQuarter(int quarter) {
+    public void setQuarter(long quarter) {
         this.quarter=quarter;
     }
 
@@ -43,7 +44,7 @@ public class StuGrades {
         return grade;
     }
 
-    public void setGrade(int Grade) {
+    public void setGrade(long Grade) {
         this.grade=Grade;
     }
 }

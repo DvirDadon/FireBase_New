@@ -7,5 +7,5 @@ public class FBref {
     public static FirebaseDatabase FBDB = FirebaseDatabase.getInstance();
 
     public static DatabaseReference refStudents = FBDB.getReference("Student_Private_Info");
-    public static DatabaseReference refStuddentGrade = FBDB.getReference("StuGrades");
+    public static DatabaseReference refStudentGrade = FBDB.getReference("StuGrades");
 }

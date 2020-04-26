@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.firebase_new.FBref.refStuddentGrade;
+import static com.example.firebase_new.FBref.refStudentGrade;
 import static com.example.firebase_new.FBref.refStudents;
 
 public class menuDelete extends AppCompatActivity implements AdapterView.OnItemClickListener{
@@ -34,6 +34,7 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
     ArrayAdapter<String> adp;
     ArrayAdapter<String> adp2;
     AlertDialog.Builder adb;
+    ValueEventListener stuListener,StuGradeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,36 +46,24 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
         lvGrades.setOnItemClickListener(this);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         lv.setOnItemClickListener(this);
+
+
         ValueEventListener stuListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dS) {
-
                 stuList.clear();
                 stuValues.clear();
-                stuGradeList.clear();
-                stuGradeValues.clear();
                 for(DataSnapshot data : dS.getChildren()) {
-                    str1 = (String) data.getKey();
+                    str1 = (String)data.getKey();
                     Student_Private_Info stuTmp = data.getValue(Student_Private_Info.class);
                     stuValues.add(stuTmp);
-                    str2 = stuTmp.getStudent_N();
+                    str2 = stuTmp.getStudent_N()+","+stuTmp.getStudent_P()+","+stuTmp.getAddress()+","+ stuTmp.getHome_Phone()+",";
+                    str2+= stuTmp.getMom_N()+","+ stuTmp.getMom_P()+ "," +stuTmp.getDad_N() + ","+ stuTmp.getDad_P();
                     stuList.add(str1+" "+str2);
                 }
-                for (DataSnapshot data : dS.getChildren()){
-                    str3 = (String) data.getKey();
-                    StuGrades stuGradeTmp = data.getValue(StuGrades.class);
-                    stuGradeValues.add(stuGradeTmp);
-                    str4 = stuGradeTmp.getSubject();
-                    stuGradeList.add(str3+" "+str4);
-                }
-
                 adp = new ArrayAdapter<String>(menuDelete.this,R.layout.support_simple_spinner_dropdown_item, stuList);
                 lv.setAdapter(adp);
-                adp2 = new ArrayAdapter<String>(menuDelete.this,R.layout.support_simple_spinner_dropdown_item,stuGradeList);
-                lvGrades.setAdapter(adp2);
-
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -82,6 +71,30 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
             }
         };
         refStudents.addValueEventListener(stuListener);
+
+        ValueEventListener StuGradeListener = new ValueEventListener() {
+            @Override
+            public void onDataChange( DataSnapshot dS) {
+                stuGradeList.clear();
+                stuGradeValues.clear();
+                for (DataSnapshot data : dS.getChildren()){
+                    str3 = (String) data.getKey();
+                    StuGrades stuGradeTmp = data.getValue(StuGrades.class);
+                    stuGradeValues.add(stuGradeTmp);
+                    str4 = stuGradeTmp.getSubject()+","+stuGradeTmp.getQuarter()+","+stuGradeTmp.getGrade();
+                    stuGradeList.add(str3+" "+str4);
+                }
+                adp2 = new ArrayAdapter<String>(menuDelete.this,R.layout.support_simple_spinner_dropdown_item,stuGradeList);
+                lvGrades.setAdapter(adp2);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        refStudentGrade.addValueEventListener(StuGradeListener);
+
     }
 
     /**
@@ -104,13 +117,12 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
                 adb.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                         String strstuID=stuValues.get(pos).getStuID();
+                        final String strstuID=stuValues.get(pos).getStuID()+"";
                         refStudents.child(strstuID).removeValue();
                         stuList.remove(pos);
                         adp.notifyDataSetChanged();
-
-                        strstuID=stuGradeValues.get(pos).getStuID();
-                        refStuddentGrade.child(strstuID).removeValue();
+                        final String strstuID_2=stuGradeValues.get(pos).getStuID();
+                        refStudentGrade.child(strstuID_2).removeValue();
                         stuGradeList.remove(pos);
                         adp2.notifyDataSetChanged();
                     }
@@ -118,6 +130,7 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
                 adb.setPositiveButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(menuDelete.this, str1, Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                     }
                 });
@@ -133,6 +146,14 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
                 adb.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        String strstuID=stuValues.get(pos).getStuID();
+                        refStudents.child(strstuID).removeValue();
+                        stuList.remove(pos);
+                        adp.notifyDataSetChanged();
+                        strstuID=stuGradeValues.get(pos).getStuID();
+                        refStudentGrade.child(strstuID).removeValue();
+                        stuGradeList.remove(pos);
+                        adp2.notifyDataSetChanged();
                     }
                 });
                 adb.setPositiveButton("No", new DialogInterface.OnClickListener() {
@@ -149,6 +170,11 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
 
 
     }
+    public void EndAct () {
+        if (stuListener!=null) {
+            refStudents.removeEventListener(stuListener);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,17 +188,19 @@ public class menuDelete extends AppCompatActivity implements AdapterView.OnItemC
         switch (id) {
             case (R.id.menuDataIn): {
                 Intent s = new Intent(this, MainActivity.class);
+                EndAct();
                 startActivity(s);
-
                 break;
             }
             case (R.id.menuSort): {
                 Intent s = new Intent(this, menuSort.class);
+                EndAct();
                 startActivity(s);
                 break;
             }
             case (R.id.Credits): {
                 Intent s = new Intent(this, Credits.class);
+                EndAct();
                 startActivity(s);
                 break;
             }

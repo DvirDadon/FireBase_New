@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
-import static com.example.firebase_new.FBref.refStuddentGrade;
+import static com.example.firebase_new.FBref.refStudentGrade;
 import static com.example.firebase_new.FBref.refStudents;
 
 
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         S_Name = findViewById(R.id.S_Name);
-        Address = findViewById(R.id.S_Name);
+        Address = findViewById(R.id.Address);
         S_Phone = findViewById(R.id.S_Phone);
         HomePhone = findViewById(R.id.HomePhone);
         M_Name = findViewById(R.id.M_Name);
@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
         long S_P = Long.parseLong(Student_P);
         long HP = Long.parseLong(HomeP);
-        long M_P = Long.parseLong(Mom_Phone);
+        long  M_P = Long.parseLong(Mom_Phone);
         long D_P = Long.parseLong(Dad_Phone);
 
-        stuID = Student_N.charAt(0)+Student_P.charAt(3)+Student_P.charAt(4)+"";
+        stuID = Student_N.charAt(0)+"_"+Student_P.charAt(3)+Student_P.charAt(4);
         SPI = new Student_Private_Info(Student_N,address,S_P,HP,Mom_N,M_P,Dad_N,D_P,stuID);
         refStudents.child(stuID).setValue(SPI);
     }
@@ -87,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
             String quarter = Quarter.getText().toString();
             String grade = Grade.getText().toString();
 
-            long Q = Integer.parseInt(quarter);
-            long G = Integer.parseInt(grade);
+            long Q = Long.parseLong(quarter);
+            long G = Long.parseLong(grade);
 
             SG = new StuGrades(subject, Q, G, stuID);
-            refStuddentGrade.child(stuID).setValue(SG);
+            refStudentGrade.child(stuID).setValue(SG);
         }
     }
 
